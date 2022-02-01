@@ -1,4 +1,4 @@
-# Azure Resource Lock Terraform Sampl
+# Azure Resource Lock Terraform Sample
 
 ## Deployment
 
