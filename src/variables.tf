@@ -14,5 +14,4 @@ variable "env" {
 
 variable "enable_locks" {
   type    = bool
-  default = true
 }

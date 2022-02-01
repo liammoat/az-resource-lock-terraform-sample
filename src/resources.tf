@@ -1,11 +1,12 @@
 locals {
+  prefix = "${var.prefix}-${var.env}"
   tags = {
     environment = var.env
   }
 }
 
 resource "azurerm_resource_group" "default" {
-  name     = "${var.prefix}-rg"
+  name     = "${local.prefix}-rg"
   location = var.location
   tags     = local.tags
 }
@@ -19,7 +20,7 @@ resource "azurerm_management_lock" "rg" {
 }
 
 resource "azurerm_virtual_network" "default" {
-  name                = "${var.prefix}-vnet"
+  name                = "${local.prefix}-vnet"
   resource_group_name = azurerm_resource_group.default.name
   location            = azurerm_resource_group.default.location
   tags                = local.tags
