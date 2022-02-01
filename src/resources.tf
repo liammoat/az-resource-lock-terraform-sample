@@ -1,6 +1,13 @@
+locals {
+  tags = {
+    environment = var.env
+  }
+}
+
 resource "azurerm_resource_group" "default" {
   name     = "${var.prefix}-rg"
   location = var.location
+  tags     = local.tags
 }
 
 resource "azurerm_management_lock" "rg" {
@@ -8,13 +15,16 @@ resource "azurerm_management_lock" "rg" {
   scope      = azurerm_resource_group.default.id
   lock_level = "ReadOnly"
   notes      = "This Resource Group is Read-Only"
+  count      = var.enable_locks ? 1 : 0
 }
 
 resource "azurerm_virtual_network" "default" {
   name                = "${var.prefix}-vnet"
   resource_group_name = azurerm_resource_group.default.name
   location            = azurerm_resource_group.default.location
-  address_space       = ["10.0.0.0/16"]
+  tags                = local.tags
+
+  address_space = ["10.0.0.0/16"]
 }
 
 resource "azurerm_management_lock" "vnet" {
@@ -22,4 +32,5 @@ resource "azurerm_management_lock" "vnet" {
   scope      = azurerm_virtual_network.default.id
   lock_level = "CanNotDelete"
   notes      = "Locked because it's needed by a third-party"
+  count      = var.enable_locks ? 1 : 0
 }
